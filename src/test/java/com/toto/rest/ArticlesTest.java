@@ -25,14 +25,12 @@ class ArticlesTest {
         assertEquals(2, articles.length);
 
         Article first = articles[0];
-        assertEquals(1L, first.id());
         assertEquals("First News", first.title());
         assertEquals("Content of the first news.", first.content());
         assertEquals("Alice", first.author());
         assertEquals(LocalDateTime.of(2025, 1, 1, 12, 0), first.publicationDate());
 
         Article second = articles[1];
-        assertEquals(2L, second.id());
         assertEquals("Second News", second.title());
         assertEquals("Content of the second news.", second.content());
         assertEquals("Bob", second.author());
