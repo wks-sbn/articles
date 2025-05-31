@@ -30,14 +30,12 @@ class ArticlesPersisterTest {
             "First News",
             "Content of the first news.",
             "Alice",
-            LocalDateTime.of(2025, 1, 1, 12, 0)
-    );
+            LocalDateTime.of(2025, 1, 1, 12, 0));
     static final Article ARTICLE_2 = new Article(
             "Second News",
             "Content of the second news.",
             "Bob",
-            LocalDateTime.of(2025, 2, 1, 12, 0)
-    );
+            LocalDateTime.of(2025, 2, 1, 12, 0));
 
     @BeforeEach
     void cleanUp() {
@@ -87,11 +85,10 @@ class ArticlesPersisterTest {
     void testUpdate() {
         persister.save(ARTICLE_1).await().indefinitely();
         Article updatedArticle = new Article(
-            ARTICLE_1.title(),
-            "Updated content",
-            "Updated author",
-            ARTICLE_1.publicationDate().plusDays(1)
-        );
+                ARTICLE_1.title(),
+                "Updated content",
+                "Updated author",
+                ARTICLE_1.publicationDate().plusDays(1));
         Article updated = persister.update(ARTICLE_1.title(), updatedArticle).await().indefinitely();
         assertTrue(updated != null && updated.title().equals(ARTICLE_1.title()));
 
@@ -102,11 +99,10 @@ class ArticlesPersisterTest {
     @Test
     void testUpdateNotFound() {
         Article updatedArticle = new Article(
-            "not-exist",
-            "content",
-            "author",
-            LocalDateTime.now()
-        );
+                "not-exist",
+                "content",
+                "author",
+                LocalDateTime.now());
         Article updated = persister.update("not-exist", updatedArticle).await().indefinitely();
         assertNull(updated);
     }
