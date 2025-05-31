@@ -6,6 +6,7 @@
 package com.toto.db;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDateTime;
@@ -70,5 +71,43 @@ class ArticlesPersisterTest {
     void testListEmpty() {
         List<Article> articles = persister.list().await().indefinitely();
         assertTrue(articles.isEmpty());
+    }
+
+    @Test
+    void testGetByTitle() {
+        persister.save(ARTICLE_1).await().indefinitely();
+        Article found = persister.getByTitle(ARTICLE_1.title()).await().indefinitely();
+        assertTrue(found != null && found.title().equals(ARTICLE_1.title()));
+
+        Article notFound = persister.getByTitle("unknown-title").await().indefinitely();
+        assertNull(notFound);
+    }
+
+    @Test
+    void testUpdate() {
+        persister.save(ARTICLE_1).await().indefinitely();
+        Article updatedArticle = new Article(
+            ARTICLE_1.title(),
+            "Updated content",
+            "Updated author",
+            ARTICLE_1.publicationDate().plusDays(1)
+        );
+        Article updated = persister.update(ARTICLE_1.title(), updatedArticle).await().indefinitely();
+        assertTrue(updated != null && updated.title().equals(ARTICLE_1.title()));
+
+        Article fetched = persister.getByTitle(ARTICLE_1.title()).await().indefinitely();
+        assertTrue(fetched != null && fetched.content().equals("Updated content"));
+    }
+
+    @Test
+    void testUpdateNotFound() {
+        Article updatedArticle = new Article(
+            "not-exist",
+            "content",
+            "author",
+            LocalDateTime.now()
+        );
+        Article updated = persister.update("not-exist", updatedArticle).await().indefinitely();
+        assertNull(updated);
     }
 }
